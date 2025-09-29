@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
 
 import java.util.HashMap;
 import java.util.Map;

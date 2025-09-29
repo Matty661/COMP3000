@@ -1,10 +1,9 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
 
 import java.util.List;
 
-import com.craftinginterpreters.lox.Expr.Variable;
-import com.craftinginterpreters.lox.Stmt.Expression;
-import com.craftinginterpreters.lox.Stmt.Print;
+import com.craftinginterpreters.Assignment1.Expr.Dam;
+import com.craftinginterpreters.Assignment1.Expr.River;
 
 class Interpreter implements Expr.Visitor<Object>,
         Stmt.Visitor<Void> {
@@ -215,6 +214,17 @@ class Interpreter implements Expr.Visitor<Object>,
 
         // Unreachable.
         return null;
+    }
+
+    @Override
+    public Object visitRiverExpr(River expr) {
+        return "River " + expr.name + " with volume " + expr.volume;
+    }
+
+    @Override
+    public Object visitDamExpr(Dam expr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visitDamExpr'");
     }
 
 }

@@ -1,0 +1,16 @@
+River Flinders = new River("Flinders River","1,200ML","30mm","root",{"Scrivener"});
+River Forth = new River("Forth River","2,500ML","15mm","root",{});
+River Gordon = new River("Gordon River","500ML","50mm","root",{});
+River Goulburn = new River("Goulburn River","5,000ML","12","combination",{"Flinders","Forth","Gordon"});
+var Lachlan = new River("Lachlan River","750ML","50mm","output",{});
+
+var Scrivener = new Dam("Scrivener Dam","27,740ML","Flinders","");
+Dam Cotter = new Dam("Cotter Dam","78,000ML","Goulburn", "Lachlan");
+
+
+Flinders -> Scrivener;
+Flinders -> Goulburn;
+Forth -> Goulburn;
+Gordon -> Goulburn;
+
+

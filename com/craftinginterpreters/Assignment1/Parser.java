@@ -1,9 +1,9 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
+
+import static com.craftinginterpreters.Assignment1.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.craftinginterpreters.lox.TokenType.*;
 
 class Parser {
     private static class ParseError extends RuntimeException {
@@ -33,6 +33,12 @@ class Parser {
         try {
             if (match(VAR))
                 return varDeclaration();
+
+            if (match(RIVER))
+                return riverDeclaration();
+
+            if (match(DAM))
+                return damDeclaration();
 
             return statement();
         } catch (ParseError error) {
@@ -67,6 +73,23 @@ class Parser {
 
         consume(SEMICOLON, "Expect ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt riverDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect river name.");
+        consume(EQUAL, "Expect '=' after river name.");
+        Expr initalizer = expression();
+        consume(SEMICOLON, "Expect ';' after river declaration.");
+        return new Stmt.Var(name, initalizer);
+    }
+
+    private Stmt damDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect dam name.");
+        consume(EQUAL, "Expect '=' after river name.");
+        Expr initalizer = expression();
+        consume(SEMICOLON, "Expect ';' after river declaration.");
+        return new Stmt.Var(name, initalizer);
+
     }
 
     private Stmt expressionStatement() {
@@ -178,12 +201,73 @@ class Parser {
             return new Expr.Variable(previous());
         }
 
+        if (match(NEW)) {
+            if (match(RIVER)) {
+                consume(LEFT_PAREN,
+                        "Expect paramaters, String name, String volume, String flowRate, String riverType, String[] Point Of Interests between '()'");
+                Expr name = expression();
+                consume(COMMA, "Expect ',' between name and volume.");
+                Expr volume = expression(); 
+                consume(COMMA, "Expect ',' between volume and riverType.");
+                Expr flowRate = expression(); 
+                consume(COMMA, "Expect ',' between flowRate and riverType.");
+                Expr riverType = expression(); 
+                consume(COMMA, "Expect ',' between riverType and Point Of Interests.");
+
+                // Point Of Interests as an array of strings
+                List<String> associateRivers = new ArrayList<>();
+                consume(LEFT_BRACE, "Expect '{' before Point Of Interests array.");
+                if (!check(RIGHT_BRACE)) {
+                    do {
+                        Expr riverName = expression();
+                        associateRivers.add(getLiteralValues(riverName));
+                    } while (match(COMMA));
+                }
+                consume(RIGHT_BRACE, "Expect '}' after associateRivers array.");
+                consume(RIGHT_PAREN, "Expect ')' after River arguments.");
+
+                // get values from expressions and convert to strings
+                return new Expr.River(getLiteralValues(name), getLiteralValues(volume), getLiteralValues(flowRate),
+                        getLiteralValues(riverType),
+                        associateRivers.toArray(new String[0]));
+            }
+            if (match(DAM)) {
+                consume(LEFT_PAREN, "Expect '(' after 'Dam'.");
+                Expr name = expression();
+                consume(COMMA, "Expect ',' between name and capacity.");
+                Expr capacity = expression();
+                consume(COMMA, "Expect ',' between capacity and River reference.");
+                Expr parentRiver = expression();
+                consume(COMMA, "Expect ',' between parentRiver and destinationRiver.");
+                Expr destinationRiver = expression();
+                consume(RIGHT_PAREN, "Expect ')' after Dam arguments.");
+
+                return new Expr.Dam(getLiteralValues(name), getLiteralValues(capacity), getLiteralValues(parentRiver),
+                        getLiteralValues(destinationRiver));
+            }
+        }
+
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
         throw error(peek(), "Expect expression.");
+    }
+
+    private String getLiteralValues(Expr expr) {
+        if (expr instanceof Expr.Literal) {
+            Object value = ((Expr.Literal) expr).value;
+            if (value != null) {
+                return value.toString();
+            }
+
+            if (expr instanceof Expr.Variable) {
+                return ((Expr.Variable) expr).name.lexeme;
+
+            }
+        }
+        throw new RuntimeException("Expected a literal expression with a non-null value.");
     }
 
     // Connections:

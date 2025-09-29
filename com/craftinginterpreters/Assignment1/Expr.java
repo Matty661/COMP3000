@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ abstract class Expr {
     R visitLiteralExpr(Literal expr);
     R visitUnaryExpr(Unary expr);
     R visitVariableExpr(Variable expr);
+    R visitRiverExpr(River expr); // Work on this tomorrow :)
+    R visitDamExpr(Dam expr);
   }
   static class Assign extends Expr {
     Assign(Token name, Expr value) {
@@ -91,6 +93,43 @@ abstract class Expr {
 
     final Token name;
   }
+
+  static class River extends Expr {
+    River(String name, String volume, String flowRate, String riverType, String[] POIs) {
+        this.name = name;
+        this.volume = volume;
+        this.flowRate = flowRate;
+        this.riverType = riverType;
+        this.POIs = POIs;
+    }
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visitRiverExpr(this);
+    }
+    final String name;
+    final String volume;
+    final String flowRate;
+    final String riverType;
+    final String[] POIs;
+}
+
+static class Dam extends Expr {
+    Dam(String name, String capacity, String parentRiver, String destinationRiver) {
+        this.name = name;
+        this.capacity = capacity;
+        this.parentRiver = parentRiver;
+        this.destinationRiver = destinationRiver;
+    }
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+        return visitor.visitDamExpr(this);
+    }
+    final String name;
+    final String capacity;
+    final String parentRiver;
+    final String destinationRiver;
+}
+
 
   abstract <R> R accept(Visitor<R> visitor);
 }

@@ -1,11 +1,11 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
+
+import static com.craftinginterpreters.Assignment1.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.craftinginterpreters.lox.TokenType.*;
 
 class Scanner {
     private final String source;
@@ -48,6 +48,11 @@ class Scanner {
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
+        keywords.put("new", NEW);
+
+        // Representing rivers and damns 
+        keywords.put("River", RIVER);
+        keywords.put("Dam", DAM);
     }
 
     private void scanToken() {

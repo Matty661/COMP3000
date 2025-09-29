@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package com.craftinginterpreters.Assignment1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,11 +7,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import com.craftinginterpreters.lox.Scanner;
+
+import com.craftinginterpreters.Assignment1.Scanner;
 
 public class Lox {
 
   private static final Interpreter interpreter = new Interpreter();
+  private static final AstPrinter printer = new AstPrinter();
   static boolean hadError = false;
   static boolean hadRuntimeError = false;
 
@@ -63,7 +65,15 @@ public class Lox {
       return;
     }
     
-    interpreter.interpret(statements);
+  // Interpret the code.
+    // interpreter.interpret(statements);
+
+  // Display the AST.
+    for (Stmt statement : statements) {
+        System.out.println(printer.print(statement));
+    }
+    
+
   }
 
   static void error(int line, String message) {
