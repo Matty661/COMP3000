@@ -40,6 +40,10 @@ class Parser {
             if (match(DAM))
                 return damDeclaration();
 
+            if (match(TIMEUNITS)) {
+                return timeUnitDeclaration();
+            }
+
             return statement();
         } catch (ParseError error) {
             synchronize();
@@ -81,6 +85,15 @@ class Parser {
         Expr initalizer = expression();
         consume(SEMICOLON, "Expect ';' after river declaration.");
         return new Stmt.Var(name, initalizer);
+    }
+
+    private Stmt timeUnitDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect time units name.");
+        consume(EQUAL, "Expect '=' after time unit name.");
+        Expr initalizer = expression();
+        consume(SEMICOLON, "Expect ';' after time unit declaration.");
+        return new Stmt.Var(name, initalizer);
+
     }
 
     private Stmt damDeclaration() {
@@ -204,14 +217,14 @@ class Parser {
         if (match(NEW)) {
             if (match(RIVER)) {
                 consume(LEFT_PAREN,
-                        "Expect paramaters, String name, String volume, String flowRate, String riverType, String[] Point Of Interests between '()'");
+                        "Expect '(' after 'Dam'. | Format: River('name', 'volume', flowRate, 'riverType', {'POI[n]'', 'POI[n+1]'...})");
                 Expr name = expression();
                 consume(COMMA, "Expect ',' between name and volume.");
-                Expr volume = expression(); 
+                Expr volume = expression();
                 consume(COMMA, "Expect ',' between volume and riverType.");
-                Expr flowRate = expression(); 
+                Expr flowRate = expression();
                 consume(COMMA, "Expect ',' between flowRate and riverType.");
-                Expr riverType = expression(); 
+                Expr riverType = expression();
                 consume(COMMA, "Expect ',' between riverType and Point Of Interests.");
 
                 // Point Of Interests as an array of strings
@@ -227,12 +240,14 @@ class Parser {
                 consume(RIGHT_PAREN, "Expect ')' after River arguments.");
 
                 // get values from expressions and convert to strings
-                return new Expr.River(getLiteralValues(name), getLiteralValues(volume), getLiteralValues(flowRate),
+                return new Expr.River(getLiteralValues(name), getLiteralValues(volume),
+                        Double.valueOf(getLiteralValues(flowRate)),
                         getLiteralValues(riverType),
                         associateRivers.toArray(new String[0]));
             }
             if (match(DAM)) {
-                consume(LEFT_PAREN, "Expect '(' after 'Dam'.");
+                consume(LEFT_PAREN,
+                        "Expect '(' after 'Dam'. | Format: Dam('name', 'capacity', 'parentRiver', 'destinationRiver')");
                 Expr name = expression();
                 consume(COMMA, "Expect ',' between name and capacity.");
                 Expr capacity = expression();
@@ -244,6 +259,16 @@ class Parser {
 
                 return new Expr.Dam(getLiteralValues(name), getLiteralValues(capacity), getLiteralValues(parentRiver),
                         getLiteralValues(destinationRiver));
+            }
+
+            if (match(TIMEUNITS)) {
+                consume(LEFT_PAREN, "Expect '(' after 'TimeUnits'. | Format: TimeUnits('unit/period', numDays)");
+                Expr unit = expression();
+                consume(COMMA, "Expect ',' between unit and numDays.");
+                Expr numDays = expression();
+                consume(RIGHT_PAREN, "Expect ')' after TimeUnits arguments.");
+
+                return new Expr.TimeUnits(getLiteralValues(unit), Double.valueOf(getLiteralValues(numDays)));
             }
         }
 

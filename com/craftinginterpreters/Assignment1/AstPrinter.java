@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.craftinginterpreters.Assignment1.Expr.Assign;
 import com.craftinginterpreters.Assignment1.Expr.Dam;
 import com.craftinginterpreters.Assignment1.Expr.River;
+import com.craftinginterpreters.Assignment1.Expr.TimeUnits;
 import com.craftinginterpreters.Assignment1.Expr.Variable;
 import com.craftinginterpreters.Assignment1.Stmt.Block;
 import com.craftinginterpreters.Assignment1.Stmt.Expression;
@@ -67,7 +68,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitRiverExpr(River expr) {
-        return "River " + expr.name + " | Volume " + expr.volume + " | Flow Rate " + expr.flowRate + " | Type " + expr.riverType + " | Important Rivers: " + Arrays.toString(expr.POIs);
+        return "River " + expr.name + " | Volume " + expr.volume + " | Flow Rate " + expr.flowRate + " | Type " + expr.riverType + " | Point Of Interests " + Arrays.toString(expr.POIs);
     }
 
     @Override
@@ -109,6 +110,11 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
             return parenthesize("var " + stmt.name.lexeme, stmt.initializer);
         }
         return "(var " + stmt.name.lexeme + ")";
+    }
+
+    @Override
+    public String visitTimeUnitsExpr(TimeUnits timeUnits) {
+        return "Flow Units: " + timeUnits.unit + " | #Days: " + timeUnits.numDays;
     }
 
 }

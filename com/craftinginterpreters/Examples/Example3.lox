@@ -1,0 +1,44 @@
+TimeUnits time = new TimeUnits("mm/h", 10);
+
+
+River Omega = new River("Omega River", "100,000ML", "100", "root", {
+  "Bendigo Dam", "Kookaburra Dam", "Snail Dam", "Twist Dam"
+});
+
+River Alpha = new River("Alpha Stream", "20,000ML", "80", "combination", {"Omega"});
+River Beta = new River("Beta Creek", "18,000ML", "70", "combination", {"Omega"});
+River Gamma = new River("Gamma Run", "22,000ML", "90", "combination", {"Omega"});
+River Delta = new River("Delta Flow", "19,000ML", "85", "combination", {"Omega"});
+
+Dam Bendigo = new Dam("Bendigo Dam", "15,000ML", "Omega", "Alpha");
+Dam Kookaburra = new Dam("Kookaburra Dam", "12,000ML", "Omega", "Beta");
+Dam Snail = new Dam("Snail Dam", "10,000ML", "Omega", "Gamma");
+Dam Twist = new Dam("Twist Dam", "8,000ML", "Omega", "Delta");
+
+River Epsilon = new River("Epsilon River", "16,000ML", "60", "combination", {"Alpha", "Beta"});
+River Zeta = new River("Zeta River", "14,000ML", "50", "combination", {"Gamma", "Delta"});
+
+Dam Flip = new Dam("Flip Dam", "7,000ML", "Epsilon", "Theta");
+Dam Flop = new Dam("Flop Dam", "6,000ML", "Zeta", "Theta");
+Dam Floop = new Dam("Floop Dam", "9,000ML", "Zeta", "Theta");
+
+var Theta = new River("Theta River", "30,000ML", "40", "output", {});
+
+Omega -> Twist;
+Omega -> Kookaburra;
+Omega -> Snail;
+Omega -> Bendigo;
+Twist -> Delta;
+Kookaburra -> Gamma;
+Snail -> Beta;
+Bendigo -> Alpha;
+Alpha -> Epsilon;
+Beta -> Epsilon;
+Gamma -> Zeta;
+Delta -> Zeta;
+
+Epsilon -> Flip;
+Zeta -> Flop;
+Zeta -> Floop;
+
+Floop -> Theta;

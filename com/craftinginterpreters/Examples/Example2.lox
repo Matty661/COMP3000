@@ -1,0 +1,23 @@
+TimeUnits time = new TimeUnits("cm/s", 10);
+
+River A = new River("Alpha River", "4,000ML", "25", "root", {"Dam1", "Dam2", "Dam3"});
+River B = new River("Beta River", "8,000ML", "30", "combination", {"A"});
+River C = new River("Charlie River", "2,000ML", "10", "output", {});
+
+var Dam1 = new Dam("North Dam", "2,000ML", "Beta", "Charlie");
+var Dam2 = new Dam("South Dam", "3,000ML", "Beta", "Charlie");
+var Dam3 = new Dam("East Dam",  "3,000ML", "Beta", "Charlie");
+
+A -> B;
+B -> Dam1;
+B -> Dam2;
+B -> Dam3;
+
+Dam2 -> C;
+
+print A;
+print B;
+print Dam1;
+print Dam2;
+print Dam3;
+print C;

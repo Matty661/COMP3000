@@ -53,6 +53,7 @@ class Scanner {
         // Representing rivers and damns 
         keywords.put("River", RIVER);
         keywords.put("Dam", DAM);
+        keywords.put("TimeUnits", TIMEUNITS);
     }
 
     private void scanToken() {
